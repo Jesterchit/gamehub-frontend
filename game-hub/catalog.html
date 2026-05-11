@@ -5,48 +5,405 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог игр — GameHub</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+
+        .catalog-page {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .catalog-page .nav-sidebar {
+            width: var(--sidebar-width, 250px);
+            min-width: var(--sidebar-width, 250px);
+            background-color: var(--bg-secondary);
+            padding: 24px 20px;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-sidebar__logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-light);
+            margin-bottom: 32px;
+            letter-spacing: 1px;
+        }
+
+        .nav-sidebar__menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-sidebar__menu a {
+            display: block;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all var(--transition);
+        }
+
+        .nav-sidebar__menu a:hover {
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .nav-sidebar__menu a.active {
+            background-color: rgba(124, 58, 237, 0.15);
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        .nav-sidebar__bottom {
+            margin-top: auto;
+        }
+
+        .btn-logout {
+            display: block;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            color: var(--danger);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            text-align: center;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .btn-logout:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+        }
+
+        /* ===== Боковая панель фильтров ===== */
+        .catalog-page .filter-sidebar {
+            width: 280px;
+            min-width: 280px;
+            background-color: var(--bg-secondary);
+            padding: 24px 20px;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .filter-sidebar__title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group__label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group__options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            padding: 6px 8px;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition);
+            user-select: none;
+        }
+
+        .filter-option:hover {
+            background-color: var(--bg-input);
+        }
+
+        .filter-option input[type="checkbox"],
+        .filter-option input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .filter-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* ===== Основная область ===== */
+        .catalog-main {
+            flex: 1;
+            padding: 24px 30px;
+            overflow-y: auto;
+            min-width: 0;
+        }
+
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .catalog-header__title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .catalog-header__count {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-bar input {
+            padding-left: 42px;
+            height: 44px;
+        }
+
+        .search-bar__icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .sort-select {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .catalog-content {
+            margin-top: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-results__icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .no-results__text {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 1200px) {
+            .catalog-page .filter-sidebar {
+                width: 250px;
+                min-width: 250px;
+            }
+            .catalog-page .nav-sidebar {
+                width: 220px;
+                min-width: 220px;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .catalog-page {
+                flex-direction: column;
+            }
+
+            .catalog-page .nav-sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 12px 16px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .nav-sidebar__logo {
+                margin-bottom: 0;
+                font-size: 1.3rem;
+            }
+
+            .nav-sidebar__menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 6px;
+                flex: unset;
+            }
+
+            .nav-sidebar__menu a {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+
+            .nav-sidebar__bottom {
+                margin-top: 0;
+            }
+
+            .catalog-page .filter-sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 16px;
+            }
+
+            .filter-group__options {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .filter-actions {
+                flex-direction: row;
+            }
+
+            .catalog-main {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .catalog-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .catalog-header__title {
+                font-size: 1.4rem;
+            }
+
+            .search-bar {
+                max-width: 100%;
+            }
+
+            .sort-select {
+                width: 100%;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+            }
+
+            .game-card__body {
+                padding: 10px;
+            }
+
+            .game-card__title {
+                font-size: 0.9rem;
+            }
+
+            .catalog-main {
+                padding: 12px;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
 
     <div class="catalog-page">
 
-        <aside class="sidebar">
-            <div class="sidebar__title">Фильтры</div>
+        <aside class="nav-sidebar">
+            <div class="nav-sidebar__logo">&#127918; GAMEHUB</div>
+
+            <nav class="nav-sidebar__menu">
+                <a href="dashboard.html">&#127968; Дашборд</a>
+                <a href="catalog.html" class="active">&#128218; Каталог</a>
+                <a href="library.html">&#128230; Моя библиотека</a>
+            </nav>
+
+            <div class="nav-sidebar__bottom">
+                <a href="index.html" class="btn-logout">&#128682; Выйти</a>
+            </div>
+        </aside>
+
+        <aside class="filter-sidebar">
+            <div class="filter-sidebar__title">&#128269; Фильтры</div>
 
             <div class="filter-group">
                 <div class="filter-group__label">Жанр</div>
                 <div class="filter-group__options" id="genre-filters">
                     <label class="filter-option">
-                        <input type="checkbox" value="rpg" data-filter="genre">
-                        Ролевые игры (RPG)
+                        <input type="checkbox" value="rpg" data-filter="genre"> Ролевые игры (RPG)
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="action" data-filter="genre">
-                        Экшен
+                        <input type="checkbox" value="action" data-filter="genre"> Экшен
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="shooter" data-filter="genre">
-                        Шутер
+                        <input type="checkbox" value="shooter" data-filter="genre"> Шутер
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="strategy" data-filter="genre">
-                        Стратегия
+                        <input type="checkbox" value="strategy" data-filter="genre"> Стратегия
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="adventure" data-filter="genre">
-                        Приключения
+                        <input type="checkbox" value="adventure" data-filter="genre"> Приключения
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="simulation" data-filter="genre">
-                        Симулятор
+                        <input type="checkbox" value="simulation" data-filter="genre"> Симулятор
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="sports" data-filter="genre">
-                        Спорт
+                        <input type="checkbox" value="sports" data-filter="genre"> Спорт
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="horror" data-filter="genre">
-                        Хоррор
+                        <input type="checkbox" value="horror" data-filter="genre"> Хоррор
                     </label>
                 </div>
             </div>
@@ -55,20 +412,16 @@
                 <div class="filter-group__label">Платформа</div>
                 <div class="filter-group__options" id="platform-filters">
                     <label class="filter-option">
-                        <input type="checkbox" value="pc" data-filter="platform">
-                        PC (Windows)
+                        <input type="checkbox" value="pc" data-filter="platform"> PC (Windows)
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="xbox" data-filter="platform">
-                        Xbox
+                        <input type="checkbox" value="xbox" data-filter="platform"> Xbox
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="playstation" data-filter="platform">
-                        PlayStation
+                        <input type="checkbox" value="playstation" data-filter="platform"> PlayStation
                     </label>
                     <label class="filter-option">
-                        <input type="checkbox" value="nintendo" data-filter="platform">
-                        Nintendo Switch
+                        <input type="checkbox" value="nintendo" data-filter="platform"> Nintendo Switch
                     </label>
                 </div>
             </div>
@@ -77,24 +430,19 @@
                 <div class="filter-group__label">Цена</div>
                 <div class="filter-group__options">
                     <label class="filter-option">
-                        <input type="radio" name="price" value="all" data-filter="price" checked>
-                        Все цены
+                        <input type="radio" name="price" value="all" data-filter="price" checked> Все цены
                     </label>
                     <label class="filter-option">
-                        <input type="radio" name="price" value="free" data-filter="price">
-                        Бесплатные
+                        <input type="radio" name="price" value="free" data-filter="price"> Бесплатные
                     </label>
                     <label class="filter-option">
-                        <input type="radio" name="price" value="under1000" data-filter="price">
-                        До 1 000 ₽
+                        <input type="radio" name="price" value="under1000" data-filter="price"> До 1 000 ₽
                     </label>
                     <label class="filter-option">
-                        <input type="radio" name="price" value="1000-2000" data-filter="price">
-                        1 000 – 2 000 ₽
+                        <input type="radio" name="price" value="1000-2000" data-filter="price"> 1 000 – 2 000 ₽
                     </label>
                     <label class="filter-option">
-                        <input type="radio" name="price" value="above2000" data-filter="price">
-                        Дороже 2 000 ₽
+                        <input type="radio" name="price" value="above2000" data-filter="price"> Дороже 2 000 ₽
                     </label>
                 </div>
             </div>
@@ -106,7 +454,6 @@
         </aside>
 
         <main class="catalog-main">
-
             <div class="catalog-header">
                 <div>
                     <h1 class="catalog-header__title">Каталог игр</h1>
@@ -114,11 +461,7 @@
                 </div>
                 <div class="search-bar">
                     <span class="search-bar__icon">&#128269;</span>
-                    <input
-                        type="text"
-                        id="catalog-search"
-                        placeholder="Поиск по названию..."
-                    >
+                    <input type="text" id="catalog-search" placeholder="Поиск по названию...">
                 </div>
                 <select id="sort-select" class="sort-select">
                     <option value="default">По умолчанию</option>
