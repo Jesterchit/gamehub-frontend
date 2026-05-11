@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя библиотека — GameHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="library-page">
+
+        <aside class="sidebar">
+            <div class="sidebar__logo">&#127918; GAMEHUB</div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html">Дашборд</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="library.html" class="active">Моя библиотека</a>
+            </nav>
+        </aside>
+
+        <main class="library-main">
+
+            <div class="library-header">
+                <div>
+                    <h1 class="library-header__title">Моя библиотека</h1>
+                </div>
+                <div class="library-header__stats" id="library-stats">
+                    Игр в библиотеке: <strong id="library-count">0</strong>
+                </div>
+            </div>
+
+            <div class="library-controls">
+                <div class="search-bar">
+                    <span class="search-bar__icon">&#128269;</span>
+                    <input
+                        type="text"
+                        id="library-search"
+                        placeholder="Поиск в библиотеке..."
+                    >
+                </div>
+                <select id="library-sort" class="sort-select">
+                    <option value="default">По дате добавления</option>
+                    <option value="name-asc">Название: А → Я</option>
+                    <option value="name-desc">Название: Я → А</option>
+                </select>
+            </div>
+
+            <div id="library-content">
+
+            </div>
+
+            <div class="empty-library" id="empty-library" style="display: none;">
+                <div class="empty-library__icon">&#128218;</div>
+                <h2 class="empty-library__title">Ваша библиотека пуста</h2>
+                <p class="empty-library__text">
+                    Перейдите в каталог, чтобы найти игры и добавить их в свою коллекцию.
+                </p>
+                <a href="catalog.html" class="btn-primary">Перейти в каталог</a>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+
+</body>
+</html>

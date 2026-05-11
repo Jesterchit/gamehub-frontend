@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информация об игре — GameHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .game-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .back-link:hover {
+            color: var(--accent-light);
+        }
+        .game-hero {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 24px;
+            height: 300px;
+            background: linear-gradient(135deg, #1A1A2E, #2D2D3F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .game-hero__placeholder {
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+        .game-info {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        .game-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        .game-info__meta {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        .game-info__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .requirements {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border);
+        }
+        .requirements h2 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all var(--transition);
+            background: none;
+        }
+        .tab.active {
+            color: var(--accent-light);
+            border-bottom-color: var(--accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-content p {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 767px) {
+            .game-hero {
+                height: 180px;
+            }
+            .game-info h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-page">
+        <a href="catalog.html" class="back-link">← Назад в каталог</a>
+
+        <div class="game-hero">
+            <div class="game-hero__placeholder">&#127918;</div>
+        </div>
+
+        <div class="game-info">
+            <h1 id="game-title">Название игры</h1>
+            <p class="game-info__meta" id="game-meta">Разработчик &middot; Издатель &middot; 2024</p>
+            <div class="game-info__tags" id="game-tags"></div>
+            <p id="game-description" style="color: var(--text-secondary);">Описание игры...</p>
+            <div style="margin-top: 16px;">
+                <button id="add-to-library-btn" class="btn-primary">+ Добавить в мою библиотеку</button>
+            </div>
+        </div>
+
+        <div class="requirements">
+            <h2>Системные требования</h2>
+            <div class="tabs">
+                <button class="tab active" data-tab="min">Минимальные</button>
+                <button class="tab" data-tab="rec">Рекомендуемые</button>
+            </div>
+            <div id="min-req" class="tab-content active">
+                <p><strong>ОС:</strong> <span id="min-os">—</span></p>
+                <p><strong>Процессор:</strong> <span id="min-cpu">—</span></p>
+                <p><strong>ОЗУ:</strong> <span id="min-ram">—</span></p>
+                <p><strong>Видеокарта:</strong> <span id="min-gpu">—</span></p>
+                <p><strong>Место на диске:</strong> <span id="min-storage">—</span></p>
+            </div>
+            <div id="rec-req" class="tab-content">
+                <p><strong>ОС:</strong> <span id="rec-os">—</span></p>
+                <p><strong>Процессор:</strong> <span id="rec-cpu">—</span></p>
+                <p><strong>ОЗУ:</strong> <span id="rec-ram">—</span></p>
+                <p><strong>Видеокарта:</strong> <span id="rec-gpu">—</span></p>
+                <p><strong>Место на диске:</strong> <span id="rec-storage">—</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = parseInt(urlParams.get('id'));
+
+            if (!gameId) {
+                document.getElementById('game-title').textContent = 'Игра не найдена';
+                return;
+            }
+
+            const game = window.gamesData
+                ? window.gamesData.find(g => g.id === gameId)
+                : null;
+
+            if (!game) {
+                document.getElementById('game-title').textContent = 'Игра не найдена';
+                return;
+            }
+
+            document.getElementById('game-title').textContent = game.title;
+            document.getElementById('game-meta').textContent =
+                `${game.developer} · ${game.publisher} · ${game.releaseDate}`;
+            document.getElementById('game-description').textContent = game.description;
+
+            const tagsContainer = document.getElementById('game-tags');
+            const genreLabel = {
+                'rpg': 'RPG', 'action': 'Экшен', 'shooter': 'Шутер',
+                'strategy': 'Стратегия', 'adventure': 'Приключения',
+                'simulation': 'Симулятор', 'sports': 'Спорт', 'horror': 'Хоррор'
+            };
+            const platformLabel = {
+                'pc': 'PC', 'xbox': 'Xbox', 'playstation': 'PS', 'nintendo': 'Switch'
+            };
+
+            tagsContainer.innerHTML = `
+                <span class="tag">${genreLabel[game.genre] || game.genre}</span>
+                ${game.platforms.map(p => `<span class="tag">${platformLabel[p] || p}</span>`).join('')}
+                <span class="tag">★ ${game.rating}</span>
+                <span class="tag">${game.price === 0 ? 'Бесплатно' : game.price + ' ₽'}</span>
+            `;
+
+            if (game.minRequirements) {
+                document.getElementById('min-os').textContent = game.minRequirements.os;
+                document.getElementById('min-cpu').textContent = game.minRequirements.processor;
+                document.getElementById('min-ram').textContent = game.minRequirements.ram;
+                document.getElementById('min-gpu').textContent = game.minRequirements.gpu;
+                document.getElementById('min-storage').textContent = game.minRequirements.storage;
+            }
+            if (game.recRequirements) {
+                document.getElementById('rec-os').textContent = game.recRequirements.os;
+                document.getElementById('rec-cpu').textContent = game.recRequirements.processor;
+                document.getElementById('rec-ram').textContent = game.recRequirements.ram;
+                document.getElementById('rec-gpu').textContent = game.recRequirements.gpu;
+                document.getElementById('rec-storage').textContent = game.recRequirements.storage;
+            }
+        });
+    </script>
+
+</body>
+</html>

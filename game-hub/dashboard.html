@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameHub — Дашборд</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+
+        .dashboard-page {
+            display: flex;
+            min-height: 100vh;
+        }
+        .dashboard-page .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background-color: var(--bg-secondary);
+            padding: 24px 20px;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .dashboard-main {
+            flex: 1;
+            padding: 24px 30px;
+            overflow-y: auto;
+        }
+        .dashboard-header {
+            margin-bottom: 28px;
+        }
+        .dashboard-header__title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .dashboard-header__subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+        .stat-card__label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .stat-card__value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 767px) {
+            .dashboard-page {
+                flex-direction: column;
+            }
+            .dashboard-page .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 12px 16px;
+            }
+            .dashboard-main {
+                padding: 16px;
+            }
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-page">
+
+        <aside class="sidebar">
+            <div class="sidebar__logo">&#127918; GAMEHUB</div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="active">Дашборд</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="library.html">Моя библиотека</a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="dashboard-header">
+                <h1 class="dashboard-header__title">Добро пожаловать, Игрок!</h1>
+                <p class="dashboard-header__subtitle">Краткий обзор вашей игровой коллекции</p>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-card__label">Игр в библиотеке</div>
+                    <div class="stat-card__value" id="stat-total">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label">Любимый жанр</div>
+                    <div class="stat-card__value" id="stat-genre">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label">На платформах</div>
+                    <div class="stat-card__value" id="stat-platforms">0</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Недавно добавленные</h2>
+            <div class="games-grid" id="recent-games">
+                <p style="color: var(--text-muted);">Загрузка...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const library = JSON.parse(localStorage.getItem('gamehub_library') || '[]');
+
+            document.getElementById('stat-total').textContent = library.length;
+
+            const recentGamesContainer = document.getElementById('recent-games');
+            if (library.length === 0) {
+                recentGamesContainer.innerHTML = `
+                    <p style="color: var(--text-muted); grid-column: 1/-1;">
+                        Ваша библиотека пуста.
+                        <a href="catalog.html">Перейти в каталог</a>
+                    </p>`;
+            } else {
+                recentGamesContainer.innerHTML = '';
+                const recentIds = library.slice(-3).reverse();
+                recentIds.forEach(item => {
+                    const game = window.gamesData
+                        ? window.gamesData.find(g => g.id === item.gameId)
+                        : null;
+                    if (game) {
+                        const card = document.createElement('div');
+                        card.className = 'game-card fade-in';
+                        card.innerHTML = `
+                            <div class="game-card__image">
+                                <div class="image-placeholder">&#127918;</div>
+                            </div>
+                            <div class="game-card__body">
+                                <h3 class="game-card__title">${game.title}</h3>
+                                <p class="game-card__meta">${game.developer || ''}</p>
+                            </div>
+                        `;
+                        recentGamesContainer.appendChild(card);
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

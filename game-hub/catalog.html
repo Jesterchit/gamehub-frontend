@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог игр — GameHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="catalog-page">
+
+        <aside class="sidebar">
+            <div class="sidebar__title">Фильтры</div>
+
+            <div class="filter-group">
+                <div class="filter-group__label">Жанр</div>
+                <div class="filter-group__options" id="genre-filters">
+                    <label class="filter-option">
+                        <input type="checkbox" value="rpg" data-filter="genre">
+                        Ролевые игры (RPG)
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="action" data-filter="genre">
+                        Экшен
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="shooter" data-filter="genre">
+                        Шутер
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="strategy" data-filter="genre">
+                        Стратегия
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="adventure" data-filter="genre">
+                        Приключения
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="simulation" data-filter="genre">
+                        Симулятор
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="sports" data-filter="genre">
+                        Спорт
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="horror" data-filter="genre">
+                        Хоррор
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group__label">Платформа</div>
+                <div class="filter-group__options" id="platform-filters">
+                    <label class="filter-option">
+                        <input type="checkbox" value="pc" data-filter="platform">
+                        PC (Windows)
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="xbox" data-filter="platform">
+                        Xbox
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="playstation" data-filter="platform">
+                        PlayStation
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="nintendo" data-filter="platform">
+                        Nintendo Switch
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group__label">Цена</div>
+                <div class="filter-group__options">
+                    <label class="filter-option">
+                        <input type="radio" name="price" value="all" data-filter="price" checked>
+                        Все цены
+                    </label>
+                    <label class="filter-option">
+                        <input type="radio" name="price" value="free" data-filter="price">
+                        Бесплатные
+                    </label>
+                    <label class="filter-option">
+                        <input type="radio" name="price" value="under1000" data-filter="price">
+                        До 1 000 ₽
+                    </label>
+                    <label class="filter-option">
+                        <input type="radio" name="price" value="1000-2000" data-filter="price">
+                        1 000 – 2 000 ₽
+                    </label>
+                    <label class="filter-option">
+                        <input type="radio" name="price" value="above2000" data-filter="price">
+                        Дороже 2 000 ₽
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button id="apply-filters-btn" class="btn-primary btn-sm">Применить фильтры</button>
+                <button id="reset-filters-btn" class="btn-secondary btn-sm">Сбросить все</button>
+            </div>
+        </aside>
+
+        <main class="catalog-main">
+
+            <div class="catalog-header">
+                <div>
+                    <h1 class="catalog-header__title">Каталог игр</h1>
+                    <p class="catalog-header__count" id="catalog-count">Загрузка...</p>
+                </div>
+                <div class="search-bar">
+                    <span class="search-bar__icon">&#128269;</span>
+                    <input
+                        type="text"
+                        id="catalog-search"
+                        placeholder="Поиск по названию..."
+                    >
+                </div>
+                <select id="sort-select" class="sort-select">
+                    <option value="default">По умолчанию</option>
+                    <option value="name-asc">Название: А → Я</option>
+                    <option value="name-desc">Название: Я → А</option>
+                    <option value="price-asc">Цена: по возрастанию</option>
+                    <option value="price-desc">Цена: по убыванию</option>
+                </select>
+            </div>
+
+            <div class="catalog-content">
+                <div class="games-grid" id="catalog-grid">
+
+                </div>
+                <div class="no-results" id="no-results" style="display: none;">
+                    <div class="no-results__icon">&#128530;</div>
+                    <p class="no-results__text">Игры не найдены</p>
+                    <p style="color: var(--text-muted); margin-top: 8px;">
+                        Попробуйте изменить параметры фильтров
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+
+</body>
+</html>
